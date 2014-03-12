@@ -10,18 +10,17 @@ function GameManager(size, InputManager, Actuator) {
 
   this.inputManager.on('think', function() {
     var best = this.ai.getBest();
-    this.actuator.showHint(best.move);
   }.bind(this));
 
 
   this.inputManager.on('run', function() {
     if (this.running) {
       this.running = false;
-      this.actuator.setRunButton('Auto-run');
+      this.actuator.setRunButton('run');
     } else {
       this.running = true;
       this.run()
-      this.actuator.setRunButton('Stop');
+      this.actuator.setRunButton('stop');
     }
   }.bind(this));
 
@@ -32,7 +31,7 @@ function GameManager(size, InputManager, Actuator) {
 GameManager.prototype.restart = function () {
   this.actuator.restart();
   this.running = false;
-  this.actuator.setRunButton('Auto-run');
+  this.actuator.setRunButton('run');
   this.setup();
 };
 
@@ -49,6 +48,9 @@ GameManager.prototype.setup = function () {
 
   // Update the actuator
   this.actuate();
+
+  // Show User Agent
+  document.getElementById('benchmark-user-agent').textContent = navigator.userAgent;
 };
 
 
@@ -72,9 +74,8 @@ GameManager.prototype.move = function(direction) {
     }
   } else {
     this.won = true;
+    elapsedTime = Date.now() - timerStart;
   }
-
-  //console.log(this.grid.valueSum());
 
   if (!this.grid.movesAvailable()) {
     this.over = true; // Game over!

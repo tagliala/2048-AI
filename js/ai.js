@@ -6,19 +6,18 @@ function AI(grid) {
 AI.prototype.eval = function() {
   var emptyCells = this.grid.availableCells().length;
 
+  // good weights = 0.1, 0, 0, 1, 1
   var smoothWeight = 0.1,
       //monoWeight   = 0.0,
       //islandWeight = 0.0,
       mono2Weight  = 1.0,
-      emptyWeight  = 2.7,
-      maxWeight    = 1.0;
+      emptyWeight  = 1.0/2.0;
 
   return this.grid.smoothness() * smoothWeight
        //+ this.grid.monotonicity() * monoWeight
        //- this.grid.islands() * islandWeight
        + this.grid.monotonicity2() * mono2Weight
-       + Math.log(emptyCells) * emptyWeight
-       + this.grid.maxValue() * maxWeight;
+       + emptyCells * emptyWeight;
 };
 
 //AI.prototype.cache = {}
@@ -113,7 +112,7 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
 
     // now just pick out the most annoying moves
     var maxScore = Math.max(Math.max.apply(null, scores[2]), Math.max.apply(null, scores[4]));
-    for (var value in scores) { // 2 and 4
+    for (var value in scores) {
       for (var i=0; i<scores[value].length; i++) {
         if (scores[value][i] == maxScore) {
           candidates.push( { position: cells[i], value: parseInt(value, 10) } );
