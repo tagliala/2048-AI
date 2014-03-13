@@ -84,7 +84,7 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
 
 
 
-    
+
     /*
     var candidates = [];
     var cells = this.grid.availableCells();
@@ -98,7 +98,7 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
           var vector = this.grid.getVector(direction);
           var target = this.grid.findFarthestPosition(cell, vector);
           if (this.grid.cellOccupied(target.next)) {
-            var targetValue = this.grid.cells[target.next.x][target.next.y].value; 
+            var targetValue = this.grid.cells[target.next.x][target.next.y].value;
             if (targetValue == value) {
               scores[value][i] -= 4;
             } else {
@@ -143,7 +143,7 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
       }
     }
     //*/
-        
+
     /*
     for (var samples=0; samples<4; samples++) {
       var newGrid = this.grid.clone();
@@ -219,7 +219,8 @@ AI.prototype.iterativeDeep = function() {
       best = newBest;
     }
     depth++;
-  } while ( (new Date()).getTime() - start < minSearchTime);
+  } while (depth < 3);
+  //} while ( (new Date()).getTime() - start < minSearchTime);
   //console.log('depth', --depth);
   //console.log(this.translate(best.move));
   //console.log(best);
