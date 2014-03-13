@@ -3,6 +3,7 @@ function HTMLActuator() {
   this.scoreContainer   = document.getElementsByClassName("score-container")[0];
   this.messageContainer = document.getElementsByClassName("game-message")[0];
   this.sharingContainer = document.getElementsByClassName("score-sharing")[0];
+  this.benchmarkResults = document.getElementById("benchmark-results");
 
   this.score = 0;
 }
@@ -107,7 +108,7 @@ HTMLActuator.prototype.updateScore = function (score) {
 
 HTMLActuator.prototype.message = function (won) {
   var type    = won ? "game-won" : "game-over";
-  var message = won ? "You win!" : "Game over!"
+  var message = won ? elapsedTime + " ms" : "Game over!"
 
   // if (ga) ga("send", "event", "game", "end", type, this.score);
 
@@ -130,18 +131,13 @@ HTMLActuator.prototype.scoreTweetButton = function () {
   tweet.setAttribute("data-via", "gabrielecirulli");
   tweet.textContent = "Tweet";
 
-  var text = "(A)I scored " + this.score + " points at 2048, a game where you " +
-             "join numbers to score high! #2048game";
+  var text = "My browser scored " + elapsedTime + " ms at 2048! #2048game #2048bench";
   tweet.setAttribute("data-text", text);
-
+  this.benchmarkResults.innerHTML = 'Elapsed time: <b>' + elapsedTime + ' ms</b>';
   return tweet;
 };
 
 
-HTMLActuator.prototype.showHint = function(hint) {
-  document.getElementById('feedback-container').innerHTML = ['↑','→','↓','←'][hint];
-}
-
 HTMLActuator.prototype.setRunButton = function(message) {
-  document.getElementById('run-button').innerHTML = message;
+  document.getElementById('run-button').innerHTML = document.getElementById('run-button').getAttribute('data-text-' + message);
 }

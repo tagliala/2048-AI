@@ -1,3 +1,14 @@
+Math.seed = 666;
+
+// in order to work 'Math.seed' must NOT be undefined,
+// so in any case, you HAVE to provide a Math.seed
+Math.random = function() {
+    Math.seed = (Math.seed * 9301 + 49297) % 233280;
+    var rnd = Math.seed / 233280;
+
+    return rnd;
+}
+
 function Grid(size) {
   this.size = size;
   this.startTiles   = 2;
@@ -326,7 +337,7 @@ Grid.prototype.toString = function() {
   return string;
 }
 
-// counts the number of isolated groups. 
+// counts the number of isolated groups.
 Grid.prototype.islands = function() {
   var self = this;
   var mark = function(x, y, value) {
@@ -335,7 +346,7 @@ Grid.prototype.islands = function() {
         self.cells[x][y].value == value &&
         !self.cells[x][y].marked ) {
       self.cells[x][y].marked = true;
-      
+
       for (direction in [0,1,2,3]) {
         var vector = self.getVector(direction);
         mark(x + vector.x, y + vector.y, value);
@@ -361,7 +372,7 @@ Grid.prototype.islands = function() {
       }
     }
   }
-  
+
   return islands;
 }
 
@@ -369,7 +380,7 @@ Grid.prototype.islands = function() {
 // measures how smooth the grid is (as if the values of the pieces
 // were interpreted as elevations). Sums of the pairwise difference
 // between neighboring tiles (in log space, so it represents the
-// number of merges that need to happen before they can merge). 
+// number of merges that need to happen before they can merge).
 // Note that the pieces can be distant
 Grid.prototype.smoothness = function() {
   var smoothness = 0;
@@ -438,7 +449,7 @@ Grid.prototype.monotonicity = function() {
             //console.log(cell, value, target, targetValue);
             increases += targetValue - value;
           }
-        } 
+        }
         if (!queued[target.x][target.y]) {
           cellQueue.push(target);
           queued[target.x][target.y] = true;
@@ -456,21 +467,19 @@ Grid.prototype.monotonicity = function() {
 
   while (cellQueue.length > 0) {
     markAfter--;
-    markAndScore(cellQueue.shift())
+    markAndScore(cellQueue.shift());
   }
 
   return -increases;
 }
 
-// measures how monotonic the grid is. This means the values of the tiles are strictly increasing
-// or decreasing in both the left/right and up/down directions
 Grid.prototype.monotonicity2 = function() {
-  // scores for all four directions
   var totals = [0, 0, 0, 0];
-
-  // up/down direction
   for (var x=0; x<4; x++) {
     var current = 0;
+    //while ( current<4 && !this.cellOccupied( this.indexes[x][current] )) {
+      //current++;
+    //}
     var next = current+1;
     while ( next<4 ) {
       while ( next<4 && !this.cellOccupied( this.indexes[x][next] )) {
@@ -493,9 +502,11 @@ Grid.prototype.monotonicity2 = function() {
     }
   }
 
-  // left/right direction
   for (var y=0; y<4; y++) {
     var current = 0;
+    //while ( current<4 && !this.cellOccupied( this.indexes[current][y] )) {
+      //current++;
+    //}
     var next = current+1;
     while ( next<4 ) {
       while ( next<4 && !this.cellOccupied( this.indexes[next][y] )) {
@@ -518,49 +529,9 @@ Grid.prototype.monotonicity2 = function() {
     }
   }
 
+  //console.log(totals)
   return Math.max(totals[0], totals[1]) + Math.max(totals[2], totals[3]);
 }
-
-Grid.prototype.maxValue = function() {
-  var max = 0;
-  for (var x=0; x<4; x++) {
-    for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.indexes[x][y])) {
-        var value = this.cellContent(this.indexes[x][y]).value;
-        if (value > max) {
-          max = value;
-        }
-      }
-    }
-  }
-
-  return Math.log(max) / Math.log(2);
-}
-
-// WIP. trying to favor top-heavy distributions (force consolidation of higher value tiles)
-/*
-Grid.prototype.valueSum = function() {
-  var valueCount = [];
-  for (var i=0; i<11; i++) {
-    valueCount.push(0);
-  }
-
-  for (var x=0; x<4; x++) {
-    for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.indexes[x][y])) {
-        valueCount[Math.log(this.cellContent(this.indexes[x][y]).value) / Math.log(2)]++;
-      }
-    }
-  }
-
-  var sum = 0;
-  for (var i=1; i<11; i++) {
-    sum += valueCount[i] * Math.pow(2, i) + i;
-  }
-
-  return sum;
-}
-*/
 
 // check for win
 Grid.prototype.isWin = function() {
