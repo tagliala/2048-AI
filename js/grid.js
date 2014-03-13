@@ -2,7 +2,7 @@ Math.seed = 666;
 
 // in order to work 'Math.seed' must NOT be undefined,
 // so in any case, you HAVE to provide a Math.seed
-Math.random = function() {
+Math.seededRandom = function() {
     Math.seed = (Math.seed * 9301 + 49297) % 233280;
     var rnd = Math.seed / 233280;
 
@@ -45,7 +45,7 @@ Grid.prototype.randomAvailableCell = function () {
   var cells = this.availableCells();
 
   if (cells.length) {
-    return cells[Math.floor(Math.random() * cells.length)];
+    return cells[Math.floor(Math.seededRandom() * cells.length)];
   }
 };
 
@@ -131,7 +131,7 @@ Grid.prototype.addStartTiles = function () {
 // Adds a tile in a random position
 Grid.prototype.addRandomTile = function () {
   if (this.cellsAvailable()) {
-    var value = Math.random() < 0.9 ? 2 : 4;
+    var value = Math.seededRandom() < 0.9 ? 2 : 4;
     //var value = Math.random() < 0.9 ? 256 : 512;
     var tile = new Tile(this.randomAvailableCell(), value);
 
