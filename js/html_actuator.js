@@ -134,6 +134,7 @@ HTMLActuator.prototype.scoreTweetButton = function () {
   var text = "My browser scored " + elapsedTime + " ms at 2048! #2048game #2048bench";
   tweet.setAttribute("data-text", text);
   this.benchmarkResults.innerHTML = 'Elapsed time: <b>' + elapsedTime + ' ms</b>';
+  ga('send', 'event', 'Benchmark', navigator.userAgent, elapsedTime)
   return tweet;
 };
 
